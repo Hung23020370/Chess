@@ -2,7 +2,7 @@ package Pieces;
 
 import Main.Board;
 
-import java.awt.image.BufferedImage;
+import javax.swing.*;
 
 public class Knight extends piece{
     public Knight(Board board,int col, int row, boolean isWhite) {
@@ -15,6 +15,11 @@ public class Knight extends piece{
 
         this.isWhite = isWhite;
         this.name = "Knight";
-        this.sprite = sheet.getSubimage(2 * sheetScale, isWhite ? 0 : sheetScale, sheetScale, sheetScale).getScaledInstance(board.square_size, board.square_size, BufferedImage.SCALE_SMOOTH);
+        if(isWhite)
+            this.image = new ImageIcon(getClass().getResource("/Image/white_knight.png")).getImage();
+        else
+            this.image = new ImageIcon(getClass().getResource("/Image/black_knight.png")).getImage();
+
     }
 }
+
