@@ -19,22 +19,43 @@ public class GamePanel extends Panel {
 
     public MouseHandle [][] mouseHandles = new MouseHandle[8][8];
 
-    ArrayList<ChessMan> chessManArrayList ;
+    King whiteKing;
+    King blackKing;
+    Knight whiteKnight1;
+    Knight whiteKnight2;
+    Knight blackKnight1;
+    Knight blackKnight2;
+    Pawn [] whitePawn = new Pawn[8];
+    Pawn [] blackPawn = new Pawn[8];
+    Rook whiteRook1;
+    Rook whiteRook2;
+    Rook blackRook1;
+    Rook blackRook2;
+    Bishop whiteBishop1;
+    Bishop whiteBishop2;
+    Bishop blackBishop1;
+    Bishop blackBishop2;
+    Queen whiteQueen;
+    Queen blackQueen;
+    ArrayList<ChessMan> chessManArrayList;
+    int test_while = 0;
 
-    int test_while;
-
+    public int turn;
 
     public GamePanel(Frame frame) {
         super(frame);
         this.menuButton = new MenuButton(this,0,0,2 * tileSize,tileSize);
         this.setBackground(Color.BLACK);
+        this.turn = 1;
         for (int i = 0; i < 8; i++ ) {
             for (int j = 0; j < 8; j++) {
                 mouseHandles[i][j] = new MouseHandle((j + 4) * tileSize, (i + 2) * tileSize, tileSize, tileSize);
                 this.addMouseListener(mouseHandles[i][j]);
+                this.addMouseMotionListener(mouseHandles[i][j]);
             }
         }
         chessManArrayList = new ArrayList<>();
+
         if(frame.select_white) {
             test_while = 0;
         } else {
@@ -111,7 +132,7 @@ public class GamePanel extends Panel {
                 g2D.drawImage(queue, (j + 12) * tileSize, i * tileSize, tileSize, tileSize, null);
             }
         }
-        for(ChessMan chessMan : chessManArrayList) {
+        for (ChessMan chessMan : chessManArrayList){
             chessMan.draw(g2D);
         }
         g2D.dispose();
