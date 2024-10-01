@@ -44,7 +44,10 @@ public abstract class ChessMan{
         this.firstMove = true;
         this.alive = true;
         setValue();
-        if (!white){
+        if (!white && panel.frame.select_white ){
+            this.value = 0 - this.value;
+        }
+        else if (white && !panel.frame.select_white) {
             this.value = 0 - this.value;
         }
         panel.Board[i][j] = this.value;
