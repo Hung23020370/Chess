@@ -94,10 +94,16 @@ public class GamePanel extends Panel {
     @Override
     public void update() {
         menuButton.update();
-        Iterator<ChessMan> iterator = chessManArrayList.iterator();
-        while (iterator.hasNext()) {
-            ChessMan chessMan = iterator.next();
+        for (int i = 0; i < chessManArrayList.size(); i++) {
+            ChessMan chessMan = chessManArrayList.get(i);
             chessMan.update();
+
+            // Kiểm tra nếu quân cờ cần thăng cấp
+            if (chessMan.promotionRequired) {
+                ChessMan newChessMan = chessMan.promotePawn(); // Thăng cấp quân tốt
+                chessManArrayList.set(i, newChessMan); // Cập nhật quân cờ mới vào danh sách
+                chessMan.promotionRequired = false; // Đặt lại cờ thăng cấp
+            }
         }
 
     }

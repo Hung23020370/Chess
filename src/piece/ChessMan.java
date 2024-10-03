@@ -129,7 +129,6 @@ public abstract class ChessMan{
                 }
                 if (this instanceof Pawn && ((this.i == 0) || (this.i == 7))) {
                     this.promotionRequired = true;
-                    panel.chessManArrayList.add(promotePawn());
                 }
             }
             for (int a = 0; a < 8; a++) {
