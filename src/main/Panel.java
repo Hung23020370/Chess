@@ -12,9 +12,6 @@ public abstract class Panel extends JPanel implements Runnable {
     final int screenRow = 12;
     public int screenWidth = tileSize * screenCol;
     public int screenHeight = tileSize * screenRow;
-
-    public int turn = 1;
-
     final int fps = 30;
 
     public Thread thread;

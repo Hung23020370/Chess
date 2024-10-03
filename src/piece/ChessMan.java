@@ -46,9 +46,11 @@ public abstract class ChessMan{
         setValue();
         if (!white && panel.frame.select_white ){
             this.value = 0 - this.value;
+            panel.turn = 1;
         }
         else if (white && !panel.frame.select_white) {
             this.value = 0 - this.value;
+            panel.turn = -1;
         }
         panel.Board[i][j] = this.value;
         setImageName();
@@ -121,8 +123,10 @@ public abstract class ChessMan{
                         break;
                     }
                 }
+                if (this instanceof Pawn && ((this.i == 0) || (this.i == 7))) {
+                    ((Pawn) this).promotionRequired = true;
+                }
             }
-
             for (int a = 0; a < 8; a++) {
                 for (int b = 0; b < 8; b++) {
                     if (panel.mouseHandles[a][b].click) {

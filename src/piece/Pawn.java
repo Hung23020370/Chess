@@ -3,7 +3,10 @@ package piece;
 import main.GamePanel;
 import pair.Pair;
 
+import javax.swing.*;
+
 public class Pawn extends ChessMan {
+    public boolean promotionRequired = false;
     public Pawn(GamePanel panel, int x, int y, boolean white) {
         super(panel, x, y, white);
     }
@@ -66,4 +69,38 @@ public class Pawn extends ChessMan {
             }
         }
     }
+    public ChessMan promotePawn() {
+        String[] options = {"Queen", "Rook", "Bishop", "Knight"};
+
+        int choice = JOptionPane.showOptionDialog(panel.frame,
+                "Chọn quân phong:",
+                "Thăng cấp quân tốt",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                options,
+                options[0]);
+        ChessMan newPiece = null;
+        if (choice >= 0) {
+            switch (choice) {
+                case 0:
+                    newPiece = new Queen(panel, this.x, this.y, white);
+                    break;
+                case 1:
+                    newPiece = new Rook(panel, this.x, this.y, white);
+                    break;
+                case 2:
+                    newPiece = new Bishop(panel, this.x, this.y, white);
+                    break;
+                case 3:
+                    newPiece = new Knight(panel, this.x, this.y, white);
+                    break;
+            }
+        }
+        Pawn.this.alive = false;
+        assert newPiece != null;
+        panel.Board[i][j] = newPiece.value;
+        return newPiece;
+    }
+
 }
