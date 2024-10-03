@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static java.lang.Math.abs;
@@ -93,21 +94,11 @@ public class GamePanel extends Panel {
     @Override
     public void update() {
         menuButton.update();
-        ArrayList <ChessMan> newChessMen = new ArrayList<>();
-
-        for (int index = 0; index < chessManArrayList.size(); index++) {
-            ChessMan chessMan = chessManArrayList.get(index);
+        Iterator<ChessMan> iterator = chessManArrayList.iterator();
+        while (iterator.hasNext()) {
+            ChessMan chessMan = iterator.next();
             chessMan.update();
-
-            if (chessMan instanceof Pawn && ((Pawn) chessMan).promotionRequired) {
-                ChessMan promotedPiece = ((Pawn) chessMan).promotePawn();
-                if (promotedPiece != null) {
-                    newChessMen.add(promotedPiece);
-                    ((Pawn) chessMan).promotionRequired = false;
-                }
-            }
         }
-        chessManArrayList.addAll(newChessMen);
 
     }
 

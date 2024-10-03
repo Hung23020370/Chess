@@ -6,6 +6,7 @@ import main.GamePanel;
 import pair.Pair;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -22,6 +23,7 @@ public abstract class ChessMan{
     public boolean white;
     public boolean alive;
     public int value;
+    public boolean promotionRequired = false;
     ArrayList<Pair> moves = new ArrayList<>();
     ArrayList<Pair> eats = new ArrayList<>();
     ArrayList<NextMove> nextMoves = new ArrayList<>();
@@ -44,7 +46,7 @@ public abstract class ChessMan{
         this.firstMove = true;
         this.alive = true;
         setValue();
-        if (!white && panel.frame.select_white ){
+        if (!white && panel.frame.select_white){
             this.value = 0 - this.value;
             panel.turn = 1;
         }
@@ -82,10 +84,12 @@ public abstract class ChessMan{
                 nextEats = new ArrayList<>();
                 eats = new ArrayList<>();
                 functionUpdate();
-                for (Pair<Integer, Integer> move : moves) {
+                ArrayList<Pair> tempMoves = new ArrayList<>(moves);
+                ArrayList<Pair> tempEats = new ArrayList<>(eats);
+                for (Pair<Integer, Integer> move : tempMoves) {
                     nextMoves.add(new NextMove(this.panel, (move.second + 4) * panel.tileSize, (move.first + 2) * panel.tileSize, panel.tileSize, panel.tileSize));
                 }
-                for (Pair<Integer, Integer> eat : eats) {
+                for (Pair<Integer, Integer> eat : tempEats) {
                     nextEats.add(new NextEat(this.panel, (eat.second + 4) * panel.tileSize, (eat.first + 2) * panel.tileSize, panel.tileSize, panel.tileSize));
                 }
             }
@@ -124,7 +128,8 @@ public abstract class ChessMan{
                     }
                 }
                 if (this instanceof Pawn && ((this.i == 0) || (this.i == 7))) {
-                    ((Pawn) this).promotionRequired = true;
+                    this.promotionRequired = true;
+                    panel.chessManArrayList.add(promotePawn());
                 }
             }
             for (int a = 0; a < 8; a++) {
@@ -154,4 +159,37 @@ public abstract class ChessMan{
             }
         }
     }
+    public ChessMan promotePawn() {
+        String[] options = {"Queen", "Rook", "Bishop", "Knight"};
+
+        int choice = JOptionPane.showOptionDialog(panel.frame,
+                "Chọn quân phong:",
+                "Thăng cấp quân tốt",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                options,
+                options[0]);
+        ChessMan newPiece = null;
+        if (choice >= 0) {
+            switch (choice) {
+                case 0:
+                    newPiece = new Queen(panel, this.x, this.y, white);
+                    break;
+                case 1:
+                    newPiece = new Rook(panel, this.x, this.y, white);
+                    break;
+                case 2:
+                    newPiece = new Bishop(panel, this.x, this.y, white);
+                    break;
+                case 3:
+                    newPiece = new Knight(panel, this.x, this.y, white);
+                    break;
+            }
+        }
+        this.alive = false;
+        panel.Board[i][j] = newPiece.value;
+        return newPiece;
+    }
+
 }
