@@ -47,7 +47,6 @@ public class GamePanel extends Panel {
     public ArrayList<ChessMan> chessMans;
     public ArrayList<ChessMan> removeWhite;
     public ArrayList<ChessMan> removeBlack;
-    ChessAI chessAI;
 
 
     public int turn;
@@ -157,9 +156,10 @@ public class GamePanel extends Panel {
                         }
                     }
                 }
+
                 if (turn == -1 && frame.modeChessAI) {
-                    chessAI = new ChessAI(this); // Tạo mới đối tượng ChessAI
-                    Move bestMove = chessAI.chessAI(3); // Gọi hàm chessAI để tìm nước đi tốt nhất
+                    ChessAI chessAI = new ChessAI(this); // Tạo mới đối tượng ChessAI
+                    Move bestMove = chessAI.chessAI(2); // Gọi hàm chessAI để tìm nước đi tốt nhất
 
                     // Thực hiện nước đi tốt nhất
                     if (bestMove != null) {
@@ -173,14 +173,13 @@ public class GamePanel extends Panel {
                         }
                     }
                 }
-            }
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 8; j++) {
-                    mouseHandles[i][j].click = false;
+
+                for (int i = 0; i < 8; i++) {
+                    for (int j = 0; j < 8; j++) {
+                        mouseHandles[i][j].click = false;
+                    }
                 }
             }
-//        System.out.println(turn);
-//        System.out.println(end);
 
     }
 

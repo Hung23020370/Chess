@@ -10,7 +10,7 @@ public class Pawn extends ChessMan{
 
     @Override
     public void setValue() {
-        this.value = 1;
+        this.value = 100;
     }
 
     @Override

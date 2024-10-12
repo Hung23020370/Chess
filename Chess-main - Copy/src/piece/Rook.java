@@ -10,7 +10,7 @@ public class Rook extends ChessMan {
 
     @Override
     public void setValue() {
-        this.value = 5;
+        this.value = 500;
     }
 
     @Override

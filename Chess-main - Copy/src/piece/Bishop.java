@@ -10,7 +10,7 @@ public class Bishop extends ChessMan{
 
     @Override
     public void setValue() {
-        this.value = 3;
+        this.value = 330;
     }
 
     @Override

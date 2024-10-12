@@ -10,7 +10,7 @@ public class Queen extends ChessMan{
 
     @Override
     public void setValue() {
-        this.value = 9;
+        this.value = 900;
     }
 
     @Override

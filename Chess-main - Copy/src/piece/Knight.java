@@ -10,7 +10,7 @@ public class Knight extends ChessMan{
 
     @Override
     public void setValue() {
-        this.value = 3;
+        this.value = 320;
     }
 
     @Override

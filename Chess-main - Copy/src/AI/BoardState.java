@@ -9,15 +9,9 @@ public class BoardState {
     public ChessMan [][] boardChess ;
 
     public BoardState(int[][] board, ChessMan[][] boardChess) {
-        this.board = new int[board.length][];
-        for (int i = 0; i < board.length; i++) {
-            this.board[i] = board[i].clone(); // Sao chép từng hàng
-        }
+        this.board = board;
 
-        this.boardChess = new ChessMan[boardChess.length][];
-        for (int i = 0; i < boardChess.length; i++) {
-            this.boardChess[i] = boardChess[i].clone(); // Sao chép từng hàng
-        }
+        this.boardChess = boardChess;
     }
 
 }

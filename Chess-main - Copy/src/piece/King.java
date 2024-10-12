@@ -20,7 +20,7 @@ public class King extends ChessMan {
 
     @Override
     public void setValue() {
-        this.value = 1000;
+        this.value = 20000;
     }
 
     @Override

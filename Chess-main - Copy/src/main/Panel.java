@@ -46,8 +46,9 @@ public abstract class Panel extends JPanel implements Runnable {
     }
 
     public abstract void update();
-
     public void paintComponent(Graphics g){
         super.paintComponent(g);
     }
+
+
 }

@@ -1,6 +1,5 @@
 package  piece;
 
-import AI.ChessAI;
 import AI.Move;
 import button.NextEat;
 import button.NextMove;
@@ -18,7 +17,7 @@ public abstract class ChessMan implements Cloneable{
     public GamePanel panel;
     public BufferedImage image;
     BufferedImage checking;
-    String name;
+    public String name;
     String color;
     public int i, j, x, y;
     public boolean button;
@@ -72,7 +71,7 @@ public abstract class ChessMan implements Cloneable{
             this.value = -this.value;
         }
         panel.Board[i][j] = this.value;
-        panel.BoardChess[i][j] = this.copy();
+        panel.BoardChess[i][j] = this;
         setImageName();
         if (this.name == "King"){
             this.king = true;
@@ -91,14 +90,6 @@ public abstract class ChessMan implements Cloneable{
         getImage();
     }
 
-    public ChessMan copy() {
-        try {
-            ChessMan copy = (ChessMan) this.clone();
-            return copy;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
-    }
     public abstract void setValue();
 
     public abstract void setImageName();
@@ -155,7 +146,7 @@ public abstract class ChessMan implements Cloneable{
             this.isMove = true;
         }
         panel.Board[i][j] = value;
-        panel.BoardChess[i][j] = this.copy();
+        panel.BoardChess[i][j] = this;
         if (special){
             panel.Board[i - panel.turn][j] = 0;
             panel.BoardChess[i - panel.turn][j] = null;
@@ -186,7 +177,7 @@ public abstract class ChessMan implements Cloneable{
                 }
                 for (Pair<Integer, Integer> eat : chessMan.eats) {
                     if (this.value > 0) {
-                        if (panel.Board[eat.first][eat.second] == 1000) {
+                        if (panel.Board[eat.first][eat.second] == 20000) {
                             panel.Board[i][j] = this.value;
                             panel.Board[i1][j1] = a;
                             if (special){
@@ -195,7 +186,7 @@ public abstract class ChessMan implements Cloneable{
                             return false;
                         }
                     } else {
-                        if (panel.Board[eat.first][eat.second] == -1000) {
+                        if (panel.Board[eat.first][eat.second] == -20000) {
                             panel.Board[i][j] = this.value;
                             panel.Board[i1][j1] = a;
                             if (special){
