@@ -37,7 +37,7 @@ public abstract class Panel extends JPanel implements Runnable {
             update();
             repaint();
             try {
-                Thread.sleep(200/fps);
+                Thread.sleep(1000/fps);
             }
             catch (InterruptedException e){
                 e.printStackTrace();

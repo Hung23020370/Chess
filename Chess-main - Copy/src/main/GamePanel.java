@@ -44,6 +44,7 @@ public class GamePanel extends Panel {
     Queen whiteQueen;
     Queen blackQueen;
     Sound sound = new Sound();
+    public boolean runAI = false;
     public ArrayList<ChessMan> chessMans;
     public ArrayList<ChessMan> removeWhite;
     public ArrayList<ChessMan> removeBlack;
@@ -156,22 +157,21 @@ public class GamePanel extends Panel {
                         }
                     }
                 }
-
                 if (turn == -1 && frame.modeChessAI) {
-                    ChessAI chessAI = new ChessAI(this); // Tạo mới đối tượng ChessAI
-                    Move bestMove = chessAI.chessAI(2); // Gọi hàm chessAI để tìm nước đi tốt nhất
+                    runAI = true;
+                    ChessAI chessAI = new ChessAI(this);
+                    Move bestMove = chessAI.chessAI(3);
+                    if(BoardChess[bestMove.from.first][bestMove.from.second] instanceof King) {
+                        end = true;
+                    }
 
                     // Thực hiện nước đi tốt nhất
                     if (bestMove != null) {
-                        for (int i = 0; i < chessMans.size(); ++i) {
-                            if(chessMans.get(i).i == bestMove.from.first && chessMans.get(i).j == bestMove.from.second) {
-                                int x = (bestMove.to.second + 4) * tileSize;
-                                int y = (bestMove.to.first + 2) * tileSize;
-                                chessMans.get(i).Move(x, y, false);
-                                break;
-                            }
-                        }
+                        int x = (bestMove.to.second + 4) * tileSize;
+                        int y = (bestMove.to.first + 2) * tileSize;
+                        BoardChess[bestMove.from.first][bestMove.from.second].Move(x, y, false);
                     }
+                    runAI = false;
                 }
 
                 for (int i = 0; i < 8; i++) {
@@ -180,6 +180,10 @@ public class GamePanel extends Panel {
                     }
                 }
             }
+
+    }
+
+    public void AI () {
 
     }
 

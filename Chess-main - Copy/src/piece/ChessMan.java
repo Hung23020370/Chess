@@ -156,6 +156,8 @@ public abstract class ChessMan implements Cloneable{
         this.button = false;
         this.moveTurn++;
     }
+
+
     // Check xem vua có bị chiếu không
     public boolean checkMove(int i1, int j1, boolean special){
         int a = panel.Board[i1][j1];
@@ -229,9 +231,9 @@ public abstract class ChessMan implements Cloneable{
                 this.check = false;
             }
 
-            if ((panel.mouseHandles[i][j].click && !panel.moving) || (panel.frame.modeChessAI && panel.turn == -1)) {
+            if ((panel.mouseHandles[i][j].click && !panel.moving) || (panel.frame.modeChessAI && panel.runAI)) {
                 this.button = true;
-                if(panel.frame.modeChessAI && panel.turn == -1) button = false;
+                if(panel.frame.modeChessAI && panel.runAI) button = false;
                 nextMoves = new ArrayList<>();
                 nextEats = new ArrayList<>();
 

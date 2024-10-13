@@ -39,7 +39,7 @@ public class Pawn extends ChessMan{
             }
 
             if(this.j - 1 > -1){
-                if (panel.Board[i][j - 1] == -1){
+                if (panel.Board[i][j - 1] == -100){
                     if (panel.blackPawn[j - 1].check){
                         Pair<Integer,Integer> pair = new Pair<>(this.i, this.j - 1);
                         pair.special2 = true;
@@ -48,7 +48,7 @@ public class Pawn extends ChessMan{
                 }
             }
             if(this.j + 1 < 8){
-                if (panel.Board[i][j + 1] == -1){
+                if (panel.Board[i][j + 1] == -100){
                     if (panel.blackPawn[j + 1].check){
                         Pair<Integer,Integer> pair = new Pair<>(this.i, this.j + 1);
                         pair.special2 = true;
@@ -95,7 +95,7 @@ public class Pawn extends ChessMan{
             }
 
             if(this.j - 1 > -1){
-                if (panel.Board[i][j - 1] == 1){
+                if (panel.Board[i][j - 1] == 100){
                     if (panel.whitePawn[j - 1].check){
                         Pair<Integer,Integer> pair = new Pair<>(this.i, this.j - 1);
                         pair.special2 = true;
@@ -104,7 +104,7 @@ public class Pawn extends ChessMan{
                 }
             }
             if(this.j + 1 < 8){
-                if (panel.Board[i][j + 1] == 1){
+                if (panel.Board[i][j + 1] == 100){
                     if (panel.whitePawn[j + 1].check){
                         Pair<Integer,Integer> pair = new Pair<>(this.i, this.j + 1);
                         pair.special2 = true;
@@ -141,26 +141,28 @@ public class Pawn extends ChessMan{
                         panel.promotion = false;
                         promotionButtons[a].button = false;
                         if (a == 0) {
-                            panel.Board[this.i][this.j] = 9;
-                            panel.chessMans.add(new Queen(panel, this.x, this.y, true));
-                            panel.BoardChess[this.i][this.j] = new Queen(panel, this.x, this.y, true); // Thay thế bằng quân Hậu
+                            panel.Board[this.i][this.j] = 900;
+                            panel.BoardChess[this.i][this.j] = new Queen(panel, this.x, this.y, true);
+                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);
+
                         }
                         else if (a == 1){
-                            panel.Board[this.i][this.j] = 5;
-                            panel.chessMans.add(new Rook(panel, this.x, this.y, true));
+                            panel.Board[this.i][this.j] = 500;
                             panel.BoardChess[this.i][this.j] = new Rook(panel, this.x, this.y, true); // Thay thế bằng quân Xe
+                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);
+
 
                         }
                         else if (a == 2){
-                            panel.Board[this.i][this.j] = 3;
-                            panel.chessMans.add(new Knight(panel, this.x, this.y, true));
+                            panel.Board[this.i][this.j] = 320;
                             panel.BoardChess[this.i][this.j] = new Knight(panel, this.x, this.y, true); // Thay thế bằng quân Mã
+                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);
 
                         }
                         else if (a == 3){
-                            panel.Board[this.i][this.j] = 3;
-                            panel.chessMans.add(new Bishop(panel, this.x, this.y, true));
+                            panel.Board[this.i][this.j] = 330;
                             panel.BoardChess[this.i][this.j] = new Bishop(panel, this.x, this.y, true); // Thay thế bằng quân Tượng
+                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);
 
                         }
                         panel.turn = panel.turn * -1;
@@ -175,26 +177,27 @@ public class Pawn extends ChessMan{
                         panel.promotion = false;
                         promotionButtons[a].button = false;
                         if (a == 4) {
-                            panel.Board[this.i][this.j] = -9;
-                            panel.chessMans.add(new Queen(panel, this.x, this.y, false));
+                            panel.Board[this.i][this.j] = -900;
                             panel.BoardChess[this.i][this.j] = new Queen(panel, this.x, this.y, false); // Thay thế bằng quân Hậu
+                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);
+
                         }
                         else if (a == 5){
-                            panel.Board[this.i][this.j] = -5;
-                            panel.chessMans.add(new Rook(panel, this.x, this.y, false));
+                            panel.Board[this.i][this.j] = -500;
                             panel.BoardChess[this.i][this.j] = new Rook(panel, this.x, this.y, false); // Thay thế bằng quân Xe
+                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);
 
                         }
                         else if (a == 6){
-                            panel.Board[this.i][this.j] = -3;
-                            panel.chessMans.add(new Knight(panel, this.x, this.y, false));
+                            panel.Board[this.i][this.j] = -320;
                             panel.BoardChess[this.i][this.j] = new Knight(panel, this.x, this.y, false); // Thay thế bằng quân Mã
+                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);
 
                         }
                         else if (a == 7){
-                            panel.Board[this.i][this.j] = -3;
-                            panel.chessMans.add(new Bishop(panel, this.x, this.y, false));
+                            panel.Board[this.i][this.j] = -330;
                             panel.BoardChess[this.i][this.j] = new Bishop(panel, this.x, this.y, false); // Thay thế bằng quân Tượng
+                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);
 
                         }
                         panel.turn = panel.turn * -1;
