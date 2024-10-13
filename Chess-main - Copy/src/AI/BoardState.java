@@ -4,7 +4,7 @@ import piece.ChessMan;
 
 import java.util.ArrayList;
 
-public class BoardState {
+public class BoardState implements Cloneable{
     public int[][] board; // Lưu trạng thái bàn cờ
     public ChessMan [][] boardChess ;
 

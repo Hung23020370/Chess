@@ -157,11 +157,11 @@ public class GamePanel extends Panel {
                         }
                     }
                 }
-                if (turn == -1 && frame.modeChessAI) {
+                if (turn == -1 && frame.modeChessAI && !moving) {
                     runAI = true;
                     ChessAI chessAI = new ChessAI(this);
-                    Move bestMove = chessAI.chessAI(3);
-                    if(BoardChess[bestMove.from.first][bestMove.from.second] instanceof King) {
+                    Move bestMove = chessAI.chessAI(2);
+                    if(BoardChess[bestMove.to.first][bestMove.to.second] instanceof King) {
                         end = true;
                     }
 

@@ -39,6 +39,9 @@ public abstract class ChessMan implements Cloneable{
     public ArrayList<Pair> eats = new ArrayList<>();
     public ArrayList<NextMove> nextMoves = new ArrayList<>();
     public ArrayList<NextEat> nextEats = new ArrayList<>();
+    public ArrayList<NextMove> nextMovesCopy = new ArrayList<>();
+    public ArrayList<NextEat> nextEatsCopy = new ArrayList<>();
+
     public ArrayList<Move> allMove = new ArrayList<>();
     PromotionButton [] promotionButtons = new PromotionButton[8];
     public ChessMan(GamePanel panel, int x, int y, boolean white){
@@ -209,7 +212,7 @@ public abstract class ChessMan implements Cloneable{
     }
 
     public void update(){
-        if(panel.Board[i][j] * this.value <= 0){
+        if(panel.Board[i][j] * this.value <= 0 && !panel.runAI){
             if (!panel.moving) {
                 this.alive = false;
             }
@@ -236,6 +239,7 @@ public abstract class ChessMan implements Cloneable{
                 if(panel.frame.modeChessAI && panel.runAI) button = false;
                 nextMoves = new ArrayList<>();
                 nextEats = new ArrayList<>();
+
 
                 for (Pair<Integer, Integer> move : moves) {
                     if (checkMove(move.first, move.second, false)) {

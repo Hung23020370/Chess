@@ -2,11 +2,8 @@ package AI;
 
 import piece.*;
 
-import java.awt.*;
-import java.util.function.BiConsumer;
-
 public class EvaluateBoard {
-    public BoardState boardState;
+    public BoardState boardStates ;
     private static final int[] PAWN_TABLE =
             {0,  0,  0,  0,  0,  0,  0,  0,
             50, 50, 50, 50, 50, 50, 50, 50,
@@ -67,8 +64,8 @@ public class EvaluateBoard {
             20, 20,  0,  0,  0,  0, 20, 20,
             20, 30, 10,  0,  0, 10, 30, 20};
 
-    public EvaluateBoard (BoardState boardState) {
-        this.boardState = boardState;
+    public EvaluateBoard (BoardState boardStates) {
+        this.boardStates = boardStates;
     }
 
     public int evaluateBoard() {
@@ -77,7 +74,7 @@ public class EvaluateBoard {
         // Loop through each square on the chessboard
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
-                ChessMan piece = boardState.boardChess[row][col]; // Access the chess piece at the current position
+                ChessMan piece = boardStates.boardChess[row][col]; // Access the chess piece at the current position
                 if (piece != null) {
                     int piecePosition = row * 8 + col; // Convert 2D coordinates to a 1D index
                     if (piece instanceof Pawn) {

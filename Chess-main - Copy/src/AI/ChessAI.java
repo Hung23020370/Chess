@@ -1,5 +1,7 @@
 package AI;
 
+import button.NextEat;
+import button.NextMove;
 import main.GamePanel;
 import piece.ChessMan;
 import pair.Pair;
@@ -18,9 +20,6 @@ public class ChessAI {
         boardState = new BoardState(panel.Board, panel.BoardChess);
     }
 
-    // Evaluation function: Calculates the score of the board
-
-    // Minimax algorithm with Alpha-Beta pruning
     public int minimax(int depth, int alpha, int beta, boolean isMaximizingPlayer) {
         if (depth == 0 || panel.end) {
             EvaluateBoard evaluateBoard = new EvaluateBoard(boardState);
@@ -38,56 +37,49 @@ public class ChessAI {
                         chessMan.update();
 
                         // Duyệt qua các nước ăn quân
-                        for (Pair<Integer, Integer> eat : chessMan.eats) {
-                            int x = eat.first;
-                            int y = eat.second;
+                        for (NextEat eat : chessMan.nextEats) {
+                            int x = eat.y / titileSize - 2;
+                            int y = eat.x / titileSize - 4;
 
                             ChessMan capturedPiece = boardState.boardChess[x][y];
-                            if (eat.special4){
+                            if(eat.special1){
                                 panel.promotion = true;
                             }
-                            Move move1 = new Move(new Pair<>(chessMan.i, chessMan.j), new Pair<>(x, y), eat.special2);
+                            Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), eat.special);
 
                             makeMove(chessMan, move1);
                             int eval = minimax(depth - 1, alpha, beta, false); // Đối thủ bây giờ là người tối thiểu hóa
                             undoMove(chessMan, capturedPiece, move1);
 
-                                maxEval = Math.max(maxEval, eval);
-                                alpha = Math.max(alpha, eval);
-                                if (beta <= alpha) { // Cắt tỉa
-                                    break;
-                                }
+                            maxEval = Math.max(maxEval, eval);
+                            alpha = Math.max(alpha, eval);
+                            if (beta <= alpha) { // Cắt tỉa
+                                break;
+                            }
 
                         }
 
                         // Duyệt qua các nước đi bình thường
-                        for (Pair<Integer, Integer> move : chessMan.moves) {
-                            int x = move.first;
-                            int y = move.second;
-                                ChessMan capturedPiece = boardState.boardChess[x][y];
-                                if (move.special1){
-                                    chessMan.check = true;
-                                }
-                                if (move.special3) {
-                                    panel.castling = true;
-
-                                }
-                                if (move.special4){
-                                    panel.promotion = true;
-                                }
-                            Move move1 = new Move(new Pair<>(chessMan.i, chessMan.j), new Pair<>(x, y), false);
+                        for (NextMove move : chessMan.nextMoves) {
+                            int x = move.y / titileSize - 2;
+                            int y = move.x / titileSize - 4;
+                            ChessMan capturedPiece = boardState.boardChess[x][y];
+                            if (move.special2) {
+                                panel.castling = true;
+                            }
+                            if (move.special3){
+                                panel.promotion = true;
+                            }
+                            Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), false);
 
                             makeMove(chessMan, move1);
-                                int eval = minimax(depth - 1, alpha, beta, false); // Đối thủ bây giờ là người tối thiểu hóa
-                                undoMove(chessMan, capturedPiece, move1);
-                            if (move.special1){
-                                chessMan.check = false;
+                            int eval = minimax(depth - 1, alpha, beta, false); // Đối thủ bây giờ là người tối thiểu hóa
+                            undoMove(chessMan, capturedPiece, move1);
+                            maxEval = Math.max(maxEval, eval);
+                            alpha = Math.max(alpha, eval);
+                            if (beta <= alpha) { // Cắt tỉa
+                                break;
                             }
-                                maxEval = Math.max(maxEval, eval);
-                                alpha = Math.max(alpha, eval);
-                                if (beta <= alpha) { // Cắt tỉa
-                                    break;
-                                }
                         }
                     }
                 }
@@ -103,15 +95,15 @@ public class ChessAI {
                         chessMan.update();
 
                         // Duyệt qua các nước ăn quân
-                        for (Pair<Integer, Integer> eat : chessMan.eats) {
-                            int x = eat.first;
-                            int y = eat.second;
-                            if (chessMan.checkMove(x, y, eat.special2)) {
-                                ChessMan capturedPiece = boardState.boardChess[x][y];
-                                Move move1 = new Move(new Pair<>(chessMan.i, chessMan.j), new Pair<>(x, y), eat.special2);
-                                if (eat.special4){
-                                    panel.promotion = true;
-                                }
+                        for (NextEat eat : chessMan.nextEats) {
+                            int x = eat.y / titileSize - 2;
+                            int y = eat.x / titileSize - 4;
+
+                            ChessMan capturedPiece = boardState.boardChess[x][y];
+                            if(eat.special1){
+                                panel.promotion = true;
+                            }
+                            Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), eat.special);
                                 makeMove(chessMan, move1);
                                 int eval = minimax(depth - 1, alpha, beta, true); // Người chơi bây giờ là tối đa hóa
                                 undoMove(chessMan, capturedPiece, move1);
@@ -121,36 +113,30 @@ public class ChessAI {
                                 if (beta <= alpha) { // Cắt tỉa
                                     break;
                                 }
-                            }
+
                         }
 
                         // Duyệt qua các nước đi bình thường
-                        for (Pair<Integer, Integer> move : chessMan.moves) {
-                            int x = move.first;
-                            int y = move.second;
+                        for (NextMove move : chessMan.nextMoves) {
+                            int x = move.y / titileSize - 2;
+                            int y = move.x / titileSize - 4;
 
-                                ChessMan capturedPiece = boardState.boardChess[x][y];
-                                Move move1 = new Move(new Pair<>(chessMan.i, chessMan.j), new Pair<>(x, y), false);
-                                if (move.special1){
-                                chessMan.check = true;
-                                }
-                                if (move.special3) {
+                            ChessMan capturedPiece = boardState.boardChess[x][y];
+                            if (move.special2) {
                                 panel.castling = true;
-                                }
-                                if (move.special4){
-                                panel.promotion = true;
-                                }
-                                makeMove(chessMan, move1);
-                                int eval = minimax(depth - 1, alpha, beta, true); // Người chơi bây giờ là tối đa hóa
-                                undoMove(chessMan, capturedPiece, move1);
-                            if (move.special1){
-                                chessMan.check = false;
                             }
-                                minEval = Math.min(minEval, eval);
-                                beta = Math.min(beta, eval);
-                                if (beta <= alpha) { // Cắt tỉa
-                                    break;
-                                }
+                            if (move.special3){
+                                panel.promotion = true;
+                            }
+                            Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), false);
+                            makeMove(chessMan, move1);
+                            int eval = minimax(depth - 1, alpha, beta, true); // Người chơi bây giờ là tối đa hóa
+                            undoMove(chessMan, capturedPiece, move1);
+                            minEval = Math.min(minEval, eval);
+                            beta = Math.min(beta, eval);
+                            if (beta <= alpha) { // Cắt tỉa
+                                break;
+                            }
 
                         }
                     }
@@ -173,51 +159,45 @@ public class ChessAI {
                     chessMan.update();
 
                     // Duyệt qua các nước ăn quân
-                    for (Pair<Integer, Integer> eat : chessMan.eats) {
-                        int x = eat.first;
-                        int y = eat.second;
-                            ChessMan capturedPiece = boardState.boardChess[x][y];
-                            Move move1 = new Move(new Pair<>(chessMan.i, chessMan.j), new Pair<>(x, y), eat.special2);
-                        if (eat.special4){
+                    for (NextEat eat : chessMan.nextEats) {
+                        int x = eat.y / titileSize - 2;
+                        int y = eat.x / titileSize - 4;
+                        ChessMan capturedPiece = boardState.boardChess[x][y];
+                        if(eat.special1){
                             panel.promotion = true;
                         }
-                            makeMove(chessMan, move1);
-                            int eval = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-                            undoMove(chessMan, capturedPiece, move1);
-
-                            if (eval < bestEval) {
-                                bestEval = eval;
-                                bestMove = new Move(new Pair<>(chessMan.i, chessMan.j), new Pair<>(x, y), false);
-                            }
+                        Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), eat.special);
+                        makeMove(chessMan, move1);
+                        int eval = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+                        undoMove(chessMan, capturedPiece, move1);
+                        if (eval < bestEval) {
+                            bestEval = eval;
+                            bestMove = new Move(new Pair<>(i, j), new Pair<>(x, y), false);
+                        }
 
                     }
 
                     // Duyệt qua các nước đi bình thường
-                    for (Pair<Integer, Integer> move : chessMan.moves) {
-                        int x = move.first;
-                        int y = move.second;
+                    for (NextMove move : chessMan.nextMoves) {
+                        int x = move.y / titileSize - 2;
+                        int y = move.x / titileSize - 4;
 
-                            ChessMan capturedPiece = boardState.boardChess[x][y];
-                            Move move1 = new Move(new Pair<>(chessMan.i, chessMan.j), new Pair<>(x, y), false);
-                        if (move.special1){
-                            chessMan.check = false;
+                        ChessMan capturedPiece = boardState.boardChess[x][y];
+                        Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), false);
+                        if (move.special2) {
+                            panel.castling = true;
                         }
-                        if (move.special3) {
-                            panel.castling = false;
+                        if (move.special3){
+                            panel.promotion = true;
                         }
-                        if (move.special4){
-                            panel.promotion = false;
+                        makeMove(chessMan, move1);
+                        int eval = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+                        undoMove(chessMan, capturedPiece, move1);
+
+                        if (eval < bestEval) {
+                            bestEval = eval;
+                            bestMove = new Move(new Pair<>(i, j), new Pair<>(x, y), false);
                         }
-                            makeMove(chessMan, move1);
-                            int eval = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-                            undoMove(chessMan, capturedPiece, move1);
-                        if (move.special1){
-                            chessMan.check = false;
-                        }
-                            if (eval < bestEval) {
-                                bestEval = eval;
-                                bestMove = new Move(new Pair<>(chessMan.i, chessMan.j), new Pair<>(x, y), false);
-                            }
 
                     }
                 }
@@ -230,6 +210,7 @@ public class ChessAI {
 
     // Thực hiện nước đi
     public void makeMove(ChessMan chessMan1, Move move1) {
+        System.out.println(chessMan1.name + " " + move1.from.first + " " + move1.from.second + " " + move1.to.first + " " + move1.to.second);
         panel.turn = panel.turn * -1;
         boardState.board[move1.from.first][move1.from.second] = 0;
         boardState.boardChess[move1.from.first][move1.from.second] = null;
@@ -243,20 +224,23 @@ public class ChessAI {
         else if(panel.promotion) {
             boardState.boardChess[move1.to.first][move1.to.second] = new Queen(panel, chessMan1.x, chessMan1.y, chessMan1.white);
             boardState.board[move1.to.first][move1.to.second] = 900;
+            panel.promotion = false;
+        }
+        else if (panel.castling) {
+            panel.castling = false;
         }
         else {
             boardState.board[move1.to.first][move1.to.second] = chessMan1.value;
             boardState.boardChess[move1.to.first][move1.to.second] = chessMan1;
         }
+        chessMan1.moveTurn ++;
     }
 
     // Hoàn tác nước đi
     public void undoMove(ChessMan chessMan1, ChessMan chessMan2, Move move1) {
         panel.turn = panel.turn * -1;
 
-
         if (panel.end) panel.end = false;
-        if (panel.promotion) panel.promotion = false;
 
         boardState.boardChess[move1.to.first][move1.to.second] = chessMan2;
         if (chessMan2 != null) {
@@ -265,10 +249,33 @@ public class ChessAI {
             boardState.board[move1.to.first][move1.to.second] = 0;
         }
         if(move1.isSpecial) {
-            boardState.boardChess[move1.to.first + panel.turn][move1.to.second] = chessMan1;
-            boardState.board[move1.to.first + panel.turn][move1.to.second] = chessMan1.value;
+            boardState.boardChess[move1.to.first - panel.turn][move1.to.second] = null;
+            boardState.board[move1.to.first - panel.turn][move1.to.second] = 0;
         }
         boardState.boardChess[move1.from.first][move1.from.second] = chessMan1;
         boardState.board[move1.from.first][move1.from.second] = chessMan1.value;
+        chessMan1.moveTurn --;
+
+
+    }
+    private void printBoardState() {
+        for (int i = 0; i < boardState.boardChess.length; i++) {
+            for (int j = 0; j < boardState.boardChess[i].length; j++) {
+                if(boardState.boardChess[i][j] != null)
+                System.out.print(boardState.boardChess[i][j].name + " ");
+                else System.out.print(0 + " ");
+            }
+            System.out.println();
+        }
+        System.out.println();
+        for (int i = 0; i < boardState.boardChess.length; i++) {
+            for (int j = 0; j < boardState.boardChess[i].length; j++) {
+                if(boardState.boardChess[i][j] != null)
+                    System.out.print(boardState.boardChess[i][j].alive + " ");
+                else System.out.print(0 + " ");
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 }
