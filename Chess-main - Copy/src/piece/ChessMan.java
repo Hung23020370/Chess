@@ -35,8 +35,8 @@ public abstract class ChessMan{
     public int ySpeed;
     public int xLock;
     public int yLock;
-    ArrayList<Pair> moves = new ArrayList<>();
-    ArrayList<Pair> eats = new ArrayList<>();
+    public ArrayList<Pair> moves = new ArrayList<>();
+    public ArrayList<Pair> eats = new ArrayList<>();
     public ArrayList<NextMove> nextMoves = new ArrayList<>();
     public ArrayList<NextEat> nextEats = new ArrayList<>();
 

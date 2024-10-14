@@ -185,8 +185,8 @@ public class GamePanel extends Panel {
                     int y = (bestMove.to.first + 2) * tileSize;
                     BoardChess[bestMove.from.first][bestMove.from.second].Move(x, y, bestMove.isSpecial);
                     if(bestMove.isPromotion) {
-                        BoardChess[bestMove.to.first][bestMove.to.second] = new Queen(this, x, y, BoardChess[bestMove.to.first][bestMove.to.second].white);
-                        Board[bestMove.to.first][bestMove.to.second] = 900;
+                        BoardChess[bestMove.to.first][bestMove.to.second] = new Queen(this, x, y, false);
+                        Board[bestMove.to.first][bestMove.to.second] = -900;
                     }
                     else if (bestMove.isCastling) {
                         turn = turn * -1;
