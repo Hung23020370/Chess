@@ -7,6 +7,7 @@ import piece.ChessMan;
 import pair.Pair;
 import piece.King;
 import piece.Queen;
+import piece.Rook;
 
 
 public class ChessAI {
@@ -42,10 +43,7 @@ public class ChessAI {
                             int y = eat.x / titileSize - 4;
 
                             ChessMan capturedPiece = boardState.boardChess[x][y];
-                            if(eat.special1){
-                                panel.promotion = true;
-                            }
-                            Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), eat.special);
+                            Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), eat.special, eat.special1, false);
 
                             makeMove(chessMan, move1);
                             int eval = minimax(depth - 1, alpha, beta, false); // Đối thủ bây giờ là người tối thiểu hóa
@@ -64,14 +62,7 @@ public class ChessAI {
                             int x = move.y / titileSize - 2;
                             int y = move.x / titileSize - 4;
                             ChessMan capturedPiece = boardState.boardChess[x][y];
-                            if (move.special2) {
-                                panel.castling = true;
-                            }
-                            if (move.special3){
-                                panel.promotion = true;
-                            }
-                            Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), false);
-
+                            Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), false, move.special3, move.special2);
                             makeMove(chessMan, move1);
                             int eval = minimax(depth - 1, alpha, beta, false); // Đối thủ bây giờ là người tối thiểu hóa
                             undoMove(chessMan, capturedPiece, move1);
@@ -100,13 +91,11 @@ public class ChessAI {
                             int y = eat.x / titileSize - 4;
 
                             ChessMan capturedPiece = boardState.boardChess[x][y];
-                            if(eat.special1){
-                                panel.promotion = true;
-                            }
-                            Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), eat.special);
+                            Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), eat.special, eat.special1, false);
                                 makeMove(chessMan, move1);
                                 int eval = minimax(depth - 1, alpha, beta, true); // Người chơi bây giờ là tối đa hóa
-                                undoMove(chessMan, capturedPiece, move1);
+
+                            undoMove(chessMan, capturedPiece, move1);
 
                                 minEval = Math.min(minEval, eval);
                                 beta = Math.min(beta, eval);
@@ -122,13 +111,7 @@ public class ChessAI {
                             int y = move.x / titileSize - 4;
 
                             ChessMan capturedPiece = boardState.boardChess[x][y];
-                            if (move.special2) {
-                                panel.castling = true;
-                            }
-                            if (move.special3){
-                                panel.promotion = true;
-                            }
-                            Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), false);
+                            Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), false, move.special3, move.special2);
                             makeMove(chessMan, move1);
                             int eval = minimax(depth - 1, alpha, beta, true); // Người chơi bây giờ là tối đa hóa
                             undoMove(chessMan, capturedPiece, move1);
@@ -163,16 +146,13 @@ public class ChessAI {
                         int x = eat.y / titileSize - 2;
                         int y = eat.x / titileSize - 4;
                         ChessMan capturedPiece = boardState.boardChess[x][y];
-                        if(eat.special1){
-                            panel.promotion = true;
-                        }
-                        Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), eat.special);
+                        Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), eat.special, eat.special1, false);
                         makeMove(chessMan, move1);
                         int eval = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
                         undoMove(chessMan, capturedPiece, move1);
                         if (eval < bestEval) {
                             bestEval = eval;
-                            bestMove = new Move(new Pair<>(i, j), new Pair<>(x, y), false);
+                            bestMove = new Move(new Pair<>(i, j), new Pair<>(x, y), eat.special, eat.special1, false);
                         }
 
                     }
@@ -183,20 +163,14 @@ public class ChessAI {
                         int y = move.x / titileSize - 4;
 
                         ChessMan capturedPiece = boardState.boardChess[x][y];
-                        Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), false);
-                        if (move.special2) {
-                            panel.castling = true;
-                        }
-                        if (move.special3){
-                            panel.promotion = true;
-                        }
+                        Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), false, move.special3, move.special2);
                         makeMove(chessMan, move1);
                         int eval = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
                         undoMove(chessMan, capturedPiece, move1);
 
                         if (eval < bestEval) {
                             bestEval = eval;
-                            bestMove = new Move(new Pair<>(i, j), new Pair<>(x, y), false);
+                            bestMove = new Move(new Pair<>(i, j), new Pair<>(x, y), false, move.special3, move.special2);
                         }
 
                     }
@@ -210,7 +184,6 @@ public class ChessAI {
 
     // Thực hiện nước đi
     public void makeMove(ChessMan chessMan1, Move move1) {
-        System.out.println(chessMan1.name + " " + move1.from.first + " " + move1.from.second + " " + move1.to.first + " " + move1.to.second);
         panel.turn = panel.turn * -1;
         boardState.board[move1.from.first][move1.from.second] = 0;
         boardState.boardChess[move1.from.first][move1.from.second] = null;
@@ -221,13 +194,41 @@ public class ChessAI {
             boardState.boardChess[move1.to.first + panel.turn][move1.to.second] = chessMan1;
             boardState.board[move1.to.first + panel.turn][move1.to.second] = chessMan1.value;
         }
-        else if(panel.promotion) {
+        else if(move1.isPromotion) {
             boardState.boardChess[move1.to.first][move1.to.second] = new Queen(panel, chessMan1.x, chessMan1.y, chessMan1.white);
             boardState.board[move1.to.first][move1.to.second] = 900;
-            panel.promotion = false;
         }
-        else if (panel.castling) {
-            panel.castling = false;
+        else if (move1.isCastling) {
+            boardState.board[move1.to.first][move1.to.second] = chessMan1.value;
+            boardState.boardChess[move1.to.first][move1.to.second] = chessMan1;
+            if (chessMan1.white && move1.to.second == 2 && boardState.boardChess[7][0] instanceof Rook && chessMan1.moveTurn == 0) {
+                ChessMan rook = boardState.boardChess[7][0];
+                boardState.boardChess[7][0] = null;
+                boardState.board[7][0] = 0;
+                boardState.boardChess[7][3] = rook;
+                boardState.board[7][3] = rook.value;
+            }
+            else if (chessMan1.white && move1.to.second == 6 && boardState.boardChess[7][7] instanceof Rook && chessMan1.moveTurn == 0) {
+                ChessMan rook = boardState.boardChess[7][7];
+                boardState.boardChess[7][7] = null;
+                boardState.board[7][7] = 0;
+                boardState.boardChess[7][5] = rook;
+                boardState.board[7][5] = rook.value;
+            }
+            else if (!chessMan1.white && move1.to.second == 2 && boardState.boardChess[0][0] instanceof Rook && chessMan1.moveTurn == 0) {
+                ChessMan rook = boardState.boardChess[0][0];
+                boardState.boardChess[0][0] = null;
+                boardState.board[0][0] = 0;
+                boardState.boardChess[0][3] = rook;
+                boardState.board[0][3] = rook.value;
+            }
+            else if (!chessMan1.white && move1.to.second == 6 && boardState.boardChess[0][7] instanceof Rook && chessMan1.moveTurn == 0) {
+                ChessMan rook = boardState.boardChess[0][7];
+                boardState.boardChess[0][7] = null;
+                boardState.board[0][7] = 0;
+                boardState.boardChess[0][6] = rook;
+                boardState.board[0][6] = rook.value;
+            }
         }
         else {
             boardState.board[move1.to.first][move1.to.second] = chessMan1.value;
@@ -240,42 +241,45 @@ public class ChessAI {
     public void undoMove(ChessMan chessMan1, ChessMan chessMan2, Move move1) {
         panel.turn = panel.turn * -1;
 
-        if (panel.end) panel.end = false;
-
+        boardState.boardChess[move1.from.first][move1.from.second] = chessMan1;
+        boardState.board[move1.from.first][move1.from.second] = chessMan1.value;
         boardState.boardChess[move1.to.first][move1.to.second] = chessMan2;
-        if (chessMan2 != null) {
-            boardState.board[move1.to.first][move1.to.second] = chessMan2.value;
-        } else {
-            boardState.board[move1.to.first][move1.to.second] = 0;
-        }
+        boardState.board[move1.to.first][move1.to.second] = (chessMan2 == null) ? 0 : chessMan2.value;
         if(move1.isSpecial) {
             boardState.boardChess[move1.to.first - panel.turn][move1.to.second] = null;
             boardState.board[move1.to.first - panel.turn][move1.to.second] = 0;
+            }
+        else if (move1.isCastling) {
+            if (chessMan1.white && move1.to.second == 2 && boardState.boardChess[7][3] instanceof Rook && chessMan1.moveTurn == 1) {
+                ChessMan rook = boardState.boardChess[7][3];
+                boardState.boardChess[7][3] = null;
+                boardState.board[7][3] = 0;
+                boardState.boardChess[7][0] = rook;
+                boardState.board[7][0] = rook.value;
+            }
+            else if (chessMan1.white && move1.to.second == 6 && boardState.boardChess[7][5] instanceof Rook && chessMan1.moveTurn == 1) {
+                ChessMan rook = boardState.boardChess[7][5];
+                boardState.boardChess[7][5] = null;
+                boardState.board[7][5] = 0;
+                boardState.boardChess[7][7] = rook;
+                boardState.board[7][7] = rook.value;
+            }
+            else if (!chessMan1.white && move1.to.second == 2 && boardState.boardChess[0][3] instanceof Rook && chessMan1.moveTurn == 1) {
+                ChessMan rook = boardState.boardChess[0][3];
+                boardState.boardChess[0][3] = null;
+                boardState.board[0][3] = 0;
+                boardState.boardChess[0][0] = rook;
+                boardState.board[0][0] = rook.value;
+            }
+            else if (!chessMan1.white && move1.to.second == 6 && boardState.boardChess[0][5] instanceof Rook && chessMan1.moveTurn == 1) {
+                ChessMan rook = boardState.boardChess[0][5];
+                boardState.boardChess[0][5] = null;
+                boardState.board[0][5] = 0;
+                boardState.boardChess[0][7] = rook;
+                boardState.board[0][7] = rook.value;
+            }
         }
-        boardState.boardChess[move1.from.first][move1.from.second] = chessMan1;
-        boardState.board[move1.from.first][move1.from.second] = chessMan1.value;
+        if (panel.end) panel.end = false;
         chessMan1.moveTurn --;
-
-
-    }
-    private void printBoardState() {
-        for (int i = 0; i < boardState.boardChess.length; i++) {
-            for (int j = 0; j < boardState.boardChess[i].length; j++) {
-                if(boardState.boardChess[i][j] != null)
-                System.out.print(boardState.boardChess[i][j].name + " ");
-                else System.out.print(0 + " ");
-            }
-            System.out.println();
-        }
-        System.out.println();
-        for (int i = 0; i < boardState.boardChess.length; i++) {
-            for (int j = 0; j < boardState.boardChess[i].length; j++) {
-                if(boardState.boardChess[i][j] != null)
-                    System.out.print(boardState.boardChess[i][j].alive + " ");
-                else System.out.print(0 + " ");
-            }
-            System.out.println();
-        }
-        System.out.println();
     }
 }

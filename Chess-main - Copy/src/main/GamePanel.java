@@ -3,6 +3,7 @@ package main;
 import AI.ChessAI;
 import AI.Move;
 import button.MenuButton;
+import button.PromotionButton;
 import piece.*;
 
 import javax.imageio.ImageIO;
@@ -10,6 +11,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class GamePanel extends Panel {
     MenuButton menuButton;
@@ -21,7 +23,11 @@ public class GamePanel extends Panel {
     public boolean castling;
     public boolean promotion;
     public int [][] Board = new int[8][8];
+
     public ChessMan [][] BoardChess = new ChessMan[8][8];
+    public ArrayList<ChessMan> removeWhite;
+    public ArrayList<ChessMan> removeBlack;
+
 
     public MouseHandle [][] mouseHandles = new MouseHandle[8][8];
 
@@ -44,11 +50,10 @@ public class GamePanel extends Panel {
     Queen whiteQueen;
     Queen blackQueen;
     Sound sound = new Sound();
-    public boolean runAI = false;
+    public boolean runAI;
     public ArrayList<ChessMan> chessMans;
-    public ArrayList<ChessMan> removeWhite;
-    public ArrayList<ChessMan> removeBlack;
 
+    public PromotionButton[] promotionButtons = new PromotionButton[8];
 
     public int turn;
 
@@ -62,6 +67,7 @@ public class GamePanel extends Panel {
         this.moving = false;
         this.castling = false;
         this.promotion = false;
+        this.runAI = false;
 
         for (int i = 0; i < 8; i++ ) {
             for (int j = 0; j < 8; j++) {
@@ -115,6 +121,15 @@ public class GamePanel extends Panel {
         chessMans.add(blackKnight1);
         this.blackKnight2 = new Knight(this, 10 * tileSize,  2 * tileSize, false);
         chessMans.add(blackKnight2);
+
+        promotionButtons[0] = new PromotionButton(this, 6 * tileSize, 1 * tileSize, tileSize, tileSize);
+        promotionButtons[1] = new PromotionButton(this, 7 * tileSize, 1 * tileSize, tileSize, tileSize);
+        promotionButtons[2] = new PromotionButton(this, 8 * tileSize, 1 * tileSize, tileSize, tileSize);
+        promotionButtons[3] = new PromotionButton(this, 9 * tileSize, 1 * tileSize, tileSize, tileSize);
+        promotionButtons[4] = new PromotionButton(this, 6 * tileSize, 10 * tileSize, tileSize, tileSize);
+        promotionButtons[5] = new PromotionButton(this, 7 * tileSize, 10 * tileSize, tileSize, tileSize);
+        promotionButtons[6] = new PromotionButton(this, 8 * tileSize, 10 * tileSize, tileSize, tileSize);
+        promotionButtons[7] = new PromotionButton(this, 9 * tileSize, 10 * tileSize, tileSize, tileSize);
         getImage();
     }
 
@@ -135,56 +150,74 @@ public class GamePanel extends Panel {
     @Override
     public void update() {
         menuButton.update();
-            if (!end){
-                for (int i = 0; i < chessMans.size(); i++) {
-                    chessMans.get(i).update();
-                    if (!chessMans.get(i).alive) {
-                        if(chessMans.get(i).white) removeWhite.add(chessMans.get(i));
-                        else removeBlack.add(chessMans.get(i));
-                    }
-                    if (chessMans.get(i).button && i != chessMans.size() - 1){
-                        chessMans.add(chessMans.get(i));
-                        chessMans.remove(i);
-
-                        if (i !=0) {
-                            i--;
-                        }
-                    }
-                    if (!chessMans.get(i).alive) {
-                        chessMans.remove(i);
-                        if (i != 0) {
-                            i--;
-                        }
+        if (!end){
+            for (int i = 0; i < chessMans.size(); i++) {
+                chessMans.get(i).update();
+                if (!chessMans.get(i).alive) {
+                    if(chessMans.get(i).white) removeWhite.add(chessMans.get(i));
+                    else removeBlack.add(chessMans.get(i));
+                }
+                if (chessMans.get(i).button && i != chessMans.size() - 1){
+                    chessMans.add(chessMans.get(i));
+                    chessMans.remove(i);
+                    if (i !=0) {
+                        i--;
                     }
                 }
-                if (turn == -1 && frame.modeChessAI && !moving) {
-                    runAI = true;
-                    ChessAI chessAI = new ChessAI(this);
-                    Move bestMove = chessAI.chessAI(2);
-                    if(BoardChess[bestMove.to.first][bestMove.to.second] instanceof King) {
-                        end = true;
-                    }
-
-                    // Thực hiện nước đi tốt nhất
-                    if (bestMove != null) {
-                        int x = (bestMove.to.second + 4) * tileSize;
-                        int y = (bestMove.to.first + 2) * tileSize;
-                        BoardChess[bestMove.from.first][bestMove.from.second].Move(x, y, false);
-                    }
-                    runAI = false;
-                }
-
-                for (int i = 0; i < 8; i++) {
-                    for (int j = 0; j < 8; j++) {
-                        mouseHandles[i][j].click = false;
+                if (!chessMans.get(i).alive) {
+                    chessMans.remove(i);
+                    if (i != 0) {
+                        i--;
                     }
                 }
             }
+            if (turn == -1 && frame.modeChessAI && !moving) {
+                runAI = true;
+                ChessAI chessAI = new ChessAI(this);
+                Move bestMove = chessAI.chessAI(2);
+                if(BoardChess[bestMove.to.first][bestMove.to.second] instanceof King) {
+                    end = true;
+                }
 
-    }
-
-    public void AI () {
-
+                // Thực hiện nước đi tốt nhất
+                if (bestMove != null) {
+                    int x = (bestMove.to.second + 4) * tileSize;
+                    int y = (bestMove.to.first + 2) * tileSize;
+                    BoardChess[bestMove.from.first][bestMove.from.second].Move(x, y, bestMove.isSpecial);
+                    if(bestMove.isPromotion) {
+                        BoardChess[bestMove.to.first][bestMove.to.second] = new Queen(this, x, y, BoardChess[bestMove.to.first][bestMove.to.second].white);
+                        Board[bestMove.to.first][bestMove.to.second] = 900;
+                    }
+                    else if (bestMove.isCastling) {
+                        turn = turn * -1;
+                        castling = true;
+                        if (BoardChess[7][0] instanceof Rook) {
+                            ChessMan rook = BoardChess[7][0];
+                            rook.functionUpdate();
+                        }
+                        if (BoardChess[7][7] instanceof Rook && castling) {
+                            ChessMan rook = BoardChess[7][7];
+                            rook.functionUpdate();
+                        }
+                        else if (BoardChess[0][0] instanceof Rook && castling) {
+                            ChessMan rook = BoardChess[0][0];
+                            rook.functionUpdate();
+                        }
+                        if (BoardChess[0][7] instanceof Rook && castling) {
+                            ChessMan rook = BoardChess[0][7];
+                            rook.functionUpdate();
+                        }
+                    }
+                }
+                runAI = false;
+            }
+        }
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                mouseHandles[i][j].click = false;
+            }
+        }
+//        System.out.println(end);
     }
 
     @Override
@@ -199,8 +232,8 @@ public class GamePanel extends Panel {
                 g2D.drawImage(queue, (j + 12) * tileSize, i * tileSize, tileSize, tileSize, null);
             }
         }
-        for (int i = 0; i < chessMans.size(); ++i){
-            chessMans.get(i).draw(g2D);
+        for (ChessMan chessMan : chessMans){
+            chessMan.draw(g2D);
         }
         for (int i = 0; i < removeWhite.size(); i++) {
             g2D.drawImage(removeWhite.get(i).image, (i % 2 + 13) * tileSize, (i / 2 + 2) * tileSize, tileSize, tileSize, null);
@@ -208,8 +241,18 @@ public class GamePanel extends Panel {
         for (int i = 0; i < removeBlack.size(); i++) {
             g2D.drawImage(removeBlack.get(i).image, (i % 2 + 1) * tileSize, (i / 2 + 2) * tileSize, tileSize, tileSize, null);
         }
-
+        if (this.promotion){
+            if (this.turn == 1){
+                for (int a = 0; a < 4; a++){
+                    promotionButtons[a].draw(g2D);
+                }
+            }
+            else if (this.turn == -1){
+                for (int a = 4; a < 8; a++){
+                    promotionButtons[a].draw(g2D);
+                }
+            }
+        }
         g2D.dispose();
     }
 }
-

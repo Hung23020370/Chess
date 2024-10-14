@@ -1,7 +1,12 @@
 package piece;
 
+import button.NextEat;
+import button.NextMove;
+import button.PromotionButton;
 import main.GamePanel;
 import pair.Pair;
+
+import java.awt.*;
 
 public class Pawn extends ChessMan{
     public Pawn(GamePanel panel, int x, int y, boolean white) {
@@ -132,74 +137,58 @@ public class Pawn extends ChessMan{
                 }
             }
         }
-        if (panel.promotion){
-            if (panel.turn == 1){
+        if (panel.promotion && !panel.moving){
+            if (panel.turn == 1 && this.i == 0){
                 for (int a = 0; a < 4; a++){
-                    promotionButtons[a].update();
-                    if (promotionButtons[a].button && this.i == 0){
+                    panel.promotionButtons[a].update();
+                    if (panel.promotionButtons[a].button){
                         this.alive = false;
                         panel.promotion = false;
-                        promotionButtons[a].button = false;
+                        panel.promotionButtons[a].button = false;
                         if (a == 0) {
                             panel.Board[this.i][this.j] = 900;
                             panel.BoardChess[this.i][this.j] = new Queen(panel, this.x, this.y, true);
                             panel.chessMans.add(panel.BoardChess[this.i][this.j]);
-
                         }
                         else if (a == 1){
                             panel.Board[this.i][this.j] = 500;
-                            panel.BoardChess[this.i][this.j] = new Rook(panel, this.x, this.y, true); // Thay thế bằng quân Xe
-                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);
-
-
-                        }
+                            panel.BoardChess[this.i][this.j] = new Rook(panel, this.x, this.y, true);
+                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);                        }
                         else if (a == 2){
                             panel.Board[this.i][this.j] = 320;
-                            panel.BoardChess[this.i][this.j] = new Knight(panel, this.x, this.y, true); // Thay thế bằng quân Mã
-                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);
-
-                        }
+                            panel.BoardChess[this.i][this.j] = new Knight(panel, this.x, this.y, true);
+                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);                        }
                         else if (a == 3){
                             panel.Board[this.i][this.j] = 330;
-                            panel.BoardChess[this.i][this.j] = new Bishop(panel, this.x, this.y, true); // Thay thế bằng quân Tượng
-                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);
-
-                        }
+                            panel.BoardChess[this.i][this.j] = new Bishop(panel, this.x, this.y, true);
+                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);                        }
                         panel.turn = panel.turn * -1;
                     }
                 }
             }
-            else if (panel.turn == -1){
+            else if (panel.turn == -1 && this.i == 7){
                 for (int a = 4; a < 8; a++){
-                    promotionButtons[a].update();
-                    if (promotionButtons[a].button && this.i == 7){
+                    panel.promotionButtons[a].update();
+                    if (panel.promotionButtons[a].button){
                         this.alive = false;
                         panel.promotion = false;
-                        promotionButtons[a].button = false;
+                        panel.promotionButtons[a].button = false;
                         if (a == 4) {
                             panel.Board[this.i][this.j] = -900;
-                            panel.BoardChess[this.i][this.j] = new Queen(panel, this.x, this.y, false); // Thay thế bằng quân Hậu
-                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);
-
-                        }
+                            panel.BoardChess[this.i][this.j] = new Queen(panel, this.x, this.y, false);
+                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);                        }
                         else if (a == 5){
                             panel.Board[this.i][this.j] = -500;
-                            panel.BoardChess[this.i][this.j] = new Rook(panel, this.x, this.y, false); // Thay thế bằng quân Xe
-                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);
-
-                        }
+                            panel.BoardChess[this.i][this.j] = new Rook(panel, this.x, this.y, false);
+                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);                          }
                         else if (a == 6){
                             panel.Board[this.i][this.j] = -320;
-                            panel.BoardChess[this.i][this.j] = new Knight(panel, this.x, this.y, false); // Thay thế bằng quân Mã
-                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);
-
-                        }
+                            panel.BoardChess[this.i][this.j] = new Knight(panel, this.x, this.y, false);
+                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);                          }
                         else if (a == 7){
                             panel.Board[this.i][this.j] = -330;
-                            panel.BoardChess[this.i][this.j] = new Bishop(panel, this.x, this.y, false); // Thay thế bằng quân Tượng
-                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);
-
-                        }
+                            panel.BoardChess[this.i][this.j] = new Bishop(panel, this.x, this.y, false);
+                            panel.chessMans.add(panel.BoardChess[this.i][this.j]);                          }
                         panel.turn = panel.turn * -1;
                     }
                 }

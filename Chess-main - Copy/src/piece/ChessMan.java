@@ -1,6 +1,5 @@
 package  piece;
 
-import AI.Move;
 import button.NextEat;
 import button.NextMove;
 import button.PromotionButton;
@@ -8,13 +7,14 @@ import main.GamePanel;
 import pair.Pair;
 
 import javax.imageio.ImageIO;
+import javax.swing.text.StyledEditorKit;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public abstract class ChessMan implements Cloneable{
-    public GamePanel panel;
+public abstract class ChessMan{
+    GamePanel panel;
     public BufferedImage image;
     BufferedImage checking;
     public String name;
@@ -35,15 +35,11 @@ public abstract class ChessMan implements Cloneable{
     public int ySpeed;
     public int xLock;
     public int yLock;
-    public ArrayList<Pair> moves = new ArrayList<>();
-    public ArrayList<Pair> eats = new ArrayList<>();
+    ArrayList<Pair> moves = new ArrayList<>();
+    ArrayList<Pair> eats = new ArrayList<>();
     public ArrayList<NextMove> nextMoves = new ArrayList<>();
     public ArrayList<NextEat> nextEats = new ArrayList<>();
-    public ArrayList<NextMove> nextMovesCopy = new ArrayList<>();
-    public ArrayList<NextEat> nextEatsCopy = new ArrayList<>();
 
-    public ArrayList<Move> allMove = new ArrayList<>();
-    PromotionButton [] promotionButtons = new PromotionButton[8];
     public ChessMan(GamePanel panel, int x, int y, boolean white){
         this.panel = panel;
         this.white = white;
@@ -82,14 +78,6 @@ public abstract class ChessMan implements Cloneable{
         else{
             this.king = false;
         }
-        promotionButtons[0] = new PromotionButton(this.panel, 6 * panel.tileSize, 1 * panel.tileSize, panel.tileSize, panel.tileSize);
-        promotionButtons[1] = new PromotionButton(this.panel, 7 * panel.tileSize, 1 * panel.tileSize, panel.tileSize, panel.tileSize);
-        promotionButtons[2] = new PromotionButton(this.panel, 8 * panel.tileSize, 1 * panel.tileSize, panel.tileSize, panel.tileSize);
-        promotionButtons[3] = new PromotionButton(this.panel, 9 * panel.tileSize, 1 * panel.tileSize, panel.tileSize, panel.tileSize);
-        promotionButtons[4] = new PromotionButton(this.panel, 6 * panel.tileSize, 10 * panel.tileSize, panel.tileSize, panel.tileSize);
-        promotionButtons[5] = new PromotionButton(this.panel, 7 * panel.tileSize, 10 * panel.tileSize, panel.tileSize, panel.tileSize);
-        promotionButtons[6] = new PromotionButton(this.panel, 8 * panel.tileSize, 10 * panel.tileSize, panel.tileSize, panel.tileSize);
-        promotionButtons[7] = new PromotionButton(this.panel, 9 * panel.tileSize, 10 * panel.tileSize, panel.tileSize, panel.tileSize);
         getImage();
     }
 
@@ -153,6 +141,7 @@ public abstract class ChessMan implements Cloneable{
         if (special){
             panel.Board[i - panel.turn][j] = 0;
             panel.BoardChess[i - panel.turn][j] = null;
+
         }
         panel.moving = true;
         panel.mouseHandles[i][j].click = false;
@@ -160,8 +149,6 @@ public abstract class ChessMan implements Cloneable{
         this.moveTurn++;
     }
 
-
-    // Check xem vua có bị chiếu không
     public boolean checkMove(int i1, int j1, boolean special){
         int a = panel.Board[i1][j1];
         panel.Board[i][j] = 0;
@@ -234,13 +221,11 @@ public abstract class ChessMan implements Cloneable{
                 this.check = false;
             }
 
-            if ((panel.mouseHandles[i][j].click && !panel.moving) || (panel.frame.modeChessAI && panel.runAI)) {
+            if (panel.mouseHandles[i][j].click && !panel.moving || (panel.frame.modeChessAI && panel.runAI)) {
                 this.button = true;
                 if(panel.frame.modeChessAI && panel.runAI) button = false;
                 nextMoves = new ArrayList<>();
                 nextEats = new ArrayList<>();
-
-
                 for (Pair<Integer, Integer> move : moves) {
                     if (checkMove(move.first, move.second, false)) {
                         NextMove nextMove = new NextMove(this.panel, (move.second + 4) * panel.tileSize, (move.first + 2) * panel.tileSize, panel.tileSize, panel.tileSize);
@@ -266,7 +251,6 @@ public abstract class ChessMan implements Cloneable{
                             nextEat.special1 = true;
                         }
                         nextEats.add(nextEat);
-
                     }
                 }
             }
@@ -303,7 +287,7 @@ public abstract class ChessMan implements Cloneable{
             }
 
 
-            if (!panel.moving) {
+            if (!panel.moving && !panel.runAI) {
                 for (int a = 0; a < 8; a++) {
                     for (int b = 0; b < 8; b++) {
                         if (panel.mouseHandles[a][b].click) {
@@ -318,6 +302,16 @@ public abstract class ChessMan implements Cloneable{
                 }
             }
         }
+        check_het_co();
+        if (this.value * panel.turn > 0 && !panel.moving){
+            this.check1 = false;
+        }
+        else {
+            check1 = true;
+        }
+    }
+
+    public void check_het_co () {
         if (this.check1) {
             if (this.king && this.check) {
                 if (!panel.moving) {
@@ -364,25 +358,19 @@ public abstract class ChessMan implements Cloneable{
                 }
             }
         }
-        if (this.value * panel.turn > 0){
-            this.check1 = false;
-        }
-        else {
-            check1 = true;
-        }
-    }
 
+    }
     public void draw(Graphics2D g2D) {
         if(this.alive) {
             g2D.drawImage(image, x, y, panel.tileSize, panel.tileSize, null);
             if (this.check && this.king){
-                if (count == 6 || count == 7 || count == 8) {
+//                if (count == 6 || count == 7 || count == 8) {
                     g2D.drawImage(checking, x, y, panel.tileSize, panel.tileSize, null);
-                    if (count == 8){
-                        count = 0;
-                    }
-                }
-                count++;
+//                    if (count == 8){
+//                        count = 0;
+//                    }
+//                }
+//                count++;
             }
             if (button) {
                 for (NextMove move : nextMoves) {
@@ -390,18 +378,6 @@ public abstract class ChessMan implements Cloneable{
                 }
                 for (NextEat eat : nextEats) {
                     eat.draw(g2D);
-                }
-            }
-            if (panel.promotion){
-                if (panel.turn == 1){
-                    for (int a = 0; a < 4; a++){
-                        promotionButtons[a].draw(g2D);
-                    }
-                }
-                else if (panel.turn == -1){
-                    for (int a = 4; a < 8; a++){
-                        promotionButtons[a].draw(g2D);
-                    }
                 }
             }
         }
