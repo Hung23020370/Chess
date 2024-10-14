@@ -174,7 +174,7 @@ public class GamePanel extends Panel {
             if (turn == -1 && frame.modeChessAI && !moving) {
                 runAI = true;
                 ChessAI chessAI = new ChessAI(this);
-                Move bestMove = chessAI.chessAI(2);
+                Move bestMove = chessAI.chessAI(4);
                 if(BoardChess[bestMove.to.first][bestMove.to.second] instanceof King) {
                     end = true;
                 }
