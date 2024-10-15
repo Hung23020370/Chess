@@ -48,18 +48,19 @@ public class ChessAI {
                         for (Pair<Integer, Integer> eat : chessMan.eats) {
                             int x = eat.first;
                             int y = eat.second;
+                            if (chessMan.checkMove(x, y, eat.special2)) {
+                                ChessMan capturedPiece = boardState.boardChess[x][y];
+                                Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), eat.special2, eat.special4, false);
 
-                            ChessMan capturedPiece = boardState.boardChess[x][y];
-                            Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), eat.special2, eat.special4, false);
+                                makeMove(chessMan, move1);
+                                int eval = minimax(depth - 1, alpha, beta, false); // Đối thủ bây giờ là người tối thiểu hóa
+                                undoMove(chessMan, capturedPiece, move1);
 
-                            makeMove(chessMan, move1);
-                            int eval = minimax(depth - 1, alpha, beta, false); // Đối thủ bây giờ là người tối thiểu hóa
-                            undoMove(chessMan, capturedPiece, move1);
-
-                            maxEval = Math.max(maxEval, eval);
-                            alpha = Math.max(alpha, eval);
-                            if (beta <= alpha) { // Cắt tỉa
-                                break;
+                                maxEval = Math.max(maxEval, eval);
+                                alpha = Math.max(alpha, eval);
+                                if (beta <= alpha) { // Cắt tỉa
+                                    break;
+                                }
                             }
                         }
 
@@ -67,17 +68,19 @@ public class ChessAI {
                         for (Pair<Integer, Integer> move : chessMan.moves) {
                             int x = move.first;
                             int y = move.second;
-                            ChessMan capturedPiece = boardState.boardChess[x][y];
-                            Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), false, move.special4, move.special3);
+                            if (chessMan.checkMove(x, y, false)) {
+                                ChessMan capturedPiece = boardState.boardChess[x][y];
+                                Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), false, move.special4, move.special3);
 
-                            makeMove(chessMan, move1);
-                            int eval = minimax(depth - 1, alpha, beta, false); // Đối thủ bây giờ là người tối thiểu hóa
-                            undoMove(chessMan, capturedPiece, move1);
+                                makeMove(chessMan, move1);
+                                int eval = minimax(depth - 1, alpha, beta, false); // Đối thủ bây giờ là người tối thiểu hóa
+                                undoMove(chessMan, capturedPiece, move1);
 
-                            maxEval = Math.max(maxEval, eval);
-                            alpha = Math.max(alpha, eval);
-                            if (beta <= alpha) { // Cắt tỉa
-                                break;
+                                maxEval = Math.max(maxEval, eval);
+                                alpha = Math.max(alpha, eval);
+                                if (beta <= alpha) { // Cắt tỉa
+                                    break;
+                                }
                             }
                         }
                     }
@@ -102,18 +105,20 @@ public class ChessAI {
                         for (Pair<Integer, Integer> eat : chessMan.eats) {
                             int x = eat.first;
                             int y = eat.second;
+                            if (chessMan.checkMove(x, y, eat.special2)) {
 
-                            ChessMan capturedPiece = boardState.boardChess[x][y];
-                            Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), eat.special2, eat.special4, false);
+                                ChessMan capturedPiece = boardState.boardChess[x][y];
+                                Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), eat.special2, eat.special4, false);
 
-                            makeMove(chessMan, move1);
-                            int eval = minimax(depth - 1, alpha, beta, true); // Người chơi bây giờ là tối đa hóa
-                            undoMove(chessMan, capturedPiece, move1);
+                                makeMove(chessMan, move1);
+                                int eval = minimax(depth - 1, alpha, beta, true); // Người chơi bây giờ là tối đa hóa
+                                undoMove(chessMan, capturedPiece, move1);
 
-                            minEval = Math.min(minEval, eval);
-                            beta = Math.min(beta, eval);
-                            if (beta <= alpha) { // Cắt tỉa
-                                break;
+                                minEval = Math.min(minEval, eval);
+                                beta = Math.min(beta, eval);
+                                if (beta <= alpha) { // Cắt tỉa
+                                    break;
+                                }
                             }
                         }
 
@@ -121,17 +126,19 @@ public class ChessAI {
                         for (Pair<Integer, Integer> move : chessMan.moves) {
                             int x = move.first;
                             int y = move.second;
-                            ChessMan capturedPiece = boardState.boardChess[x][y];
-                            Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), false, move.special4, move.special3);
+                            if (chessMan.checkMove(x, y, false)) {
+                                ChessMan capturedPiece = boardState.boardChess[x][y];
+                                Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), false, move.special4, move.special3);
 
-                            makeMove(chessMan, move1);
-                            int eval = minimax(depth - 1, alpha, beta, true); // Người chơi bây giờ là tối đa hóa
-                            undoMove(chessMan, capturedPiece, move1);
+                                makeMove(chessMan, move1);
+                                int eval = minimax(depth - 1, alpha, beta, true); // Người chơi bây giờ là tối đa hóa
+                                undoMove(chessMan, capturedPiece, move1);
 
-                            minEval = Math.min(minEval, eval);
-                            beta = Math.min(beta, eval);
-                            if (beta <= alpha) { // Cắt tỉa
-                                break;
+                                minEval = Math.min(minEval, eval);
+                                beta = Math.min(beta, eval);
+                                if (beta <= alpha) { // Cắt tỉa
+                                    break;
+                                }
                             }
                         }
                     }
@@ -161,16 +168,19 @@ public class ChessAI {
                     for (Pair<Integer, Integer> eat : chessMan.eats) {
                         int x = eat.first;
                         int y = eat.second;
-                        ChessMan capturedPiece = boardState.boardChess[x][y];
-                        Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), eat.special2, eat.special4, false);
+                        if (chessMan.checkMove(x, y, eat.special2)) {
 
-                        makeMove(chessMan, move1);
-                        int eval = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-                        undoMove(chessMan, capturedPiece, move1);
+                            ChessMan capturedPiece = boardState.boardChess[x][y];
+                            Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), eat.special2, eat.special4, false);
 
-                        if (eval < bestEval) {
-                            bestEval = eval;
-                            bestMove = new Move(new Pair<>(i, j), new Pair<>(x, y), eat.special2, eat.special4, false);
+                            makeMove(chessMan, move1);
+                            int eval = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+                            undoMove(chessMan, capturedPiece, move1);
+
+                            if (eval < bestEval) {
+                                bestEval = eval;
+                                bestMove = new Move(new Pair<>(i, j), new Pair<>(x, y), eat.special2, eat.special4, false);
+                            }
                         }
                     }
 
@@ -178,16 +188,18 @@ public class ChessAI {
                     for (Pair<Integer, Integer> move : chessMan.moves) {
                         int x = move.first;
                         int y = move.second;
-                        ChessMan capturedPiece = boardState.boardChess[x][y];
-                        Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), false, move.special4, move.special3);
+                        if (chessMan.checkMove(x, y, false)) {
+                            ChessMan capturedPiece = boardState.boardChess[x][y];
+                            Move move1 = new Move(new Pair<>(i, j), new Pair<>(x, y), false, move.special4, move.special3);
 
-                        makeMove(chessMan, move1);
-                        int eval = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-                        undoMove(chessMan, capturedPiece, move1);
+                            makeMove(chessMan, move1);
+                            int eval = minimax(depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+                            undoMove(chessMan, capturedPiece, move1);
 
-                        if (eval < bestEval) {
-                            bestEval = eval;
-                            bestMove = new Move(new Pair<>(i, j), new Pair<>(x, y), false, move.special4, move.special3);
+                            if (eval < bestEval) {
+                                bestEval = eval;
+                                bestMove = new Move(new Pair<>(i, j), new Pair<>(x, y), false, move.special4, move.special3);
+                            }
                         }
                     }
                 }

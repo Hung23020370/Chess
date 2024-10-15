@@ -7,6 +7,7 @@ import button.PromotionButton;
 import piece.*;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -223,7 +224,32 @@ public class GamePanel extends Panel {
                 mouseHandles[i][j].click = false;
             }
         }
-        if(end) System.out.println("End " + end);
+        if (end && turn == -1 ){
+            int n = JOptionPane.showConfirmDialog(this,
+                    "WHITE WINS!!!\nDo you want to play again?",
+                    "Game over",
+                    JOptionPane.YES_NO_OPTION);
+            if (n == JOptionPane.YES_OPTION){
+                end = false;
+                update();
+            }
+            else{
+                System.exit(0);
+            }
+        }
+        if (end && turn == 1 ){
+            int n = JOptionPane.showConfirmDialog(this,
+                    "BLACK WINS!!!\nDo you want to play again?",
+                    "Game over",
+                    JOptionPane.YES_NO_OPTION);
+            if (n == JOptionPane.YES_OPTION){
+                end = false;
+                update();
+            }
+            else{
+                System.exit(0);
+            }
+        }
     }
 
     @Override
