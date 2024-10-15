@@ -304,7 +304,7 @@ public abstract class ChessMan{
                 }
             }
         }
-        check_het_co();
+//        check_het_co();
         if (this.value * panel.turn > 0 && !panel.moving){
             this.check1 = false;
         }

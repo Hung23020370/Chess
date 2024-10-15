@@ -152,6 +152,8 @@ public class GamePanel extends Panel {
     @Override
     public void update() {
         menuButton.update();
+        blackKing.check_het_co();
+        whiteKing.check_het_co();
         if (!end){
             for (int i = 0; i < chessMans.size(); i++) {
                 chessMans.get(i).update();
@@ -177,22 +179,17 @@ public class GamePanel extends Panel {
                 runAI = true;
                 ChessAI chessAI = new ChessAI(this);
                 Move bestMove = chessAI.chessAI(1);
-                System.out.println(bestMove.from.first + " " + bestMove.from.second + " " + bestMove .to.first + " " + bestMove.to.second);
-                System.out.println(bestMove.isSpecial + " " + bestMove.isPromotion + " " + bestMove.isCastling);
-
-                // Thực hiện nước đi tốt nhất
+                if(bestMove == null) end = true;
                 if (bestMove != null) {
                     int x = (bestMove.to.second + 4) * tileSize;
                     int y = (bestMove.to.first + 2) * tileSize;
                     BoardChess[bestMove.from.first][bestMove.from.second].Move(x, y, bestMove.isSpecial);
                     printBoards();
                     if(bestMove.isPromotion) {
-                        System.out.println("isPromotion " + BoardChess[bestMove.to.first][bestMove.to.second].isMove + " " + BoardChess[bestMove.to.first][bestMove.to.second].isEat);
                         BoardChess[bestMove.to.first][bestMove.to.second].alive = false;
                         BoardChess[bestMove.to.first][bestMove.to.second] = new Queen(this, x, y, false);
                         Board[bestMove.to.first][bestMove.to.second] = -900;
                         chessMans.add(BoardChess[bestMove.to.first][bestMove.to.second]);
-                        System.out.println("moving " + moving);
                     }
                     else if (bestMove.isCastling) {
                         turn = turn * -1;
@@ -230,8 +227,9 @@ public class GamePanel extends Panel {
                     "Game over",
                     JOptionPane.YES_NO_OPTION);
             if (n == JOptionPane.YES_OPTION){
+                frame.gameState = 1;
+                frame.update();
                 end = false;
-                update();
             }
             else{
                 System.exit(0);
@@ -243,8 +241,9 @@ public class GamePanel extends Panel {
                     "Game over",
                     JOptionPane.YES_NO_OPTION);
             if (n == JOptionPane.YES_OPTION){
+                frame.gameState = 1;
+                frame.update();
                 end = false;
-                update();
             }
             else{
                 System.exit(0);
