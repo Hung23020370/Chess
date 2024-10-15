@@ -84,7 +84,8 @@ public class King extends ChessMan {
         }
 
         this.check = false;
-        for (ChessMan chessMan : panel.chessMans) {
+        for (int m = 0; m < panel.chessMans.size(); m++){
+            ChessMan chessMan = panel.chessMans.get(m);
             if (chessMan.value * this.value < 0) {
                 for (Pair<Integer, Integer> eat : chessMan.eats) {
                     if (eat.first == this.i && eat.second == this.j) {
@@ -99,7 +100,8 @@ public class King extends ChessMan {
             if (this.color == "White_") {
                 if (panel.Board[7][1] == 0 && panel.Board[7][2] == 0 && panel.Board[7][3] == 0) {
                     if (panel.whiteRook1.moveTurn == 0 && panel.whiteRook1.alive) {
-                        for (ChessMan chessMan : panel.chessMans) {
+                        for (int m = 0; m < panel.chessMans.size(); m++){
+                            ChessMan chessMan = panel.chessMans.get(m);
                             if (chessMan.value * this.value < 0) {
                                 for (Pair<Integer, Integer> move : chessMan.moves) {
                                     if (move.first == 7 && move.second == 2) {
@@ -117,7 +119,8 @@ public class King extends ChessMan {
                 }
                 if (panel.Board[7][5] == 0 && panel.Board[7][6] == 0) {
                     if (panel.whiteRook2.moveTurn == 0 && panel.whiteRook2.alive) {
-                        for (ChessMan chessMan : panel.chessMans) {
+                        for (int m = 0; m < panel.chessMans.size(); m++){
+                            ChessMan chessMan = panel.chessMans.get(m);
                             if (chessMan.value * this.value < 0) {
                                 for (Pair<Integer, Integer> move : chessMan.moves) {
                                     if (move.first == 7 && move.second == 6) {
@@ -138,7 +141,8 @@ public class King extends ChessMan {
             if (this.color == "Black_") {
                 if (panel.Board[0][1] == 0 && panel.Board[0][2] == 0 && panel.Board[0][3] == 0) {
                     if (panel.blackRook1.moveTurn == 0 && panel.blackRook1.alive) {
-                        for (ChessMan chessMan : panel.chessMans) {
+                        for (int m = 0; m < panel.chessMans.size(); m++){
+                            ChessMan chessMan = panel.chessMans.get(m);
                             if (chessMan.value * this.value < 0) {
                                 for (Pair<Integer, Integer> move : chessMan.moves) {
                                     if (move.first == 0 && move.second == 2) {
@@ -157,7 +161,8 @@ public class King extends ChessMan {
                 }
                 if (panel.Board[0][5] == 0 && panel.Board[0][6] == 0) {
                     if (panel.blackRook2.moveTurn == 0 && panel.blackRook2.alive) {
-                        for (ChessMan chessMan : panel.chessMans) {
+                        for (int m = 0; m < panel.chessMans.size(); m++){
+                            ChessMan chessMan = panel.chessMans.get(m);
                             if (chessMan.value * this.value < 0) {
                                 for (Pair<Integer, Integer> move : chessMan.moves) {
                                     if (move.first == 0 && move.second == 6) {

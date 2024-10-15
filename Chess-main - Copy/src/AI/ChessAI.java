@@ -10,6 +10,7 @@ import piece.Queen;
 import piece.Rook;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class ChessAI {
@@ -243,8 +244,8 @@ public class ChessAI {
                 ChessMan rook = boardState.boardChess[0][7];
                 boardState.boardChess[0][7] = null;
                 boardState.board[0][7] = 0;
-                boardState.boardChess[0][6] = rook;
-                boardState.board[0][6] = rook.value;
+                boardState.boardChess[0][5] = rook;
+                boardState.board[0][5] = rook.value;
             }
         }
         else {
@@ -267,6 +268,7 @@ public class ChessAI {
             boardState.board[move1.to.first - panel.turn][move1.to.second] = 0;
             }
         else if (move1.isCastling) {
+
             if (chessMan1.white && move1.to.second == 2 && boardState.boardChess[7][3] instanceof Rook && chessMan1.moveTurn == 1) {
                 ChessMan rook = boardState.boardChess[7][3];
                 boardState.boardChess[7][3] = null;
@@ -299,4 +301,5 @@ public class ChessAI {
         if (panel.end) panel.end = false;
         chessMan1.moveTurn --;
     }
+
 }

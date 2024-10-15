@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class GamePanel extends Panel {
@@ -174,42 +175,47 @@ public class GamePanel extends Panel {
             if (turn == -1 && frame.modeChessAI && !moving) {
                 runAI = true;
                 ChessAI chessAI = new ChessAI(this);
-                Move bestMove = chessAI.chessAI(4);
-                if(BoardChess[bestMove.to.first][bestMove.to.second] instanceof King) {
-                    end = true;
-                }
+                Move bestMove = chessAI.chessAI(1);
+                System.out.println(bestMove.from.first + " " + bestMove.from.second + " " + bestMove .to.first + " " + bestMove.to.second);
+                System.out.println(bestMove.isSpecial + " " + bestMove.isPromotion + " " + bestMove.isCastling);
 
                 // Thực hiện nước đi tốt nhất
                 if (bestMove != null) {
                     int x = (bestMove.to.second + 4) * tileSize;
                     int y = (bestMove.to.first + 2) * tileSize;
                     BoardChess[bestMove.from.first][bestMove.from.second].Move(x, y, bestMove.isSpecial);
+                    printBoards();
                     if(bestMove.isPromotion) {
+                        System.out.println("isPromotion " + BoardChess[bestMove.to.first][bestMove.to.second].isMove + " " + BoardChess[bestMove.to.first][bestMove.to.second].isEat);
+                        BoardChess[bestMove.to.first][bestMove.to.second].alive = false;
                         BoardChess[bestMove.to.first][bestMove.to.second] = new Queen(this, x, y, false);
                         Board[bestMove.to.first][bestMove.to.second] = -900;
+                        chessMans.add(BoardChess[bestMove.to.first][bestMove.to.second]);
+                        System.out.println("moving " + moving);
                     }
                     else if (bestMove.isCastling) {
                         turn = turn * -1;
-                        castling = true;
-                        if (BoardChess[7][0] instanceof Rook) {
-                            ChessMan rook = BoardChess[7][0];
-                            rook.functionUpdate();
-                        }
-                        if (BoardChess[7][7] instanceof Rook && castling) {
-                            ChessMan rook = BoardChess[7][7];
-                            rook.functionUpdate();
-                        }
-                        else if (BoardChess[0][0] instanceof Rook && castling) {
+                        if (bestMove.to.second == 2 && BoardChess[0][0] instanceof Rook && blackKing.moveTurn == 1) {
                             ChessMan rook = BoardChess[0][0];
-                            rook.functionUpdate();
+                            int x1 = (3 + 4) * tileSize;
+                            int y1 = (0 + 2) * tileSize;
+                            rook.Move(x1, y1, false);
                         }
-                        if (BoardChess[0][7] instanceof Rook && castling) {
+                        else if (bestMove.to.second == 6 && BoardChess[0][7] instanceof Rook && blackKing.moveTurn == 1) {
                             ChessMan rook = BoardChess[0][7];
-                            rook.functionUpdate();
+                            int x1 = (5 + 4) * tileSize;
+                            int y1 = (0 + 2) * tileSize;
+                            rook.Move(x1, y1, false);
                         }
                     }
+
                 }
+                if(moving) moving = false;
+                printBoards();
                 runAI = false;
+                if(!whiteKing.alive) {
+                    end = true;
+                }
             }
         }
         for (int i = 0; i < 8; i++) {
@@ -217,7 +223,7 @@ public class GamePanel extends Panel {
                 mouseHandles[i][j].click = false;
             }
         }
-//        System.out.println(end);
+        if(end) System.out.println("End " + end);
     }
 
     @Override
@@ -232,8 +238,8 @@ public class GamePanel extends Panel {
                 g2D.drawImage(queue, (j + 12) * tileSize, i * tileSize, tileSize, tileSize, null);
             }
         }
-        for (ChessMan chessMan : chessMans){
-            chessMan.draw(g2D);
+        for (int i = 0; i < chessMans.size(); i++) {
+            chessMans.get(i).draw(g2D);
         }
         for (int i = 0; i < removeWhite.size(); i++) {
             g2D.drawImage(removeWhite.get(i).image, (i % 2 + 13) * tileSize, (i / 2 + 2) * tileSize, tileSize, tileSize, null);
@@ -254,5 +260,25 @@ public class GamePanel extends Panel {
             }
         }
         g2D.dispose();
+    }
+    public void printBoards() {
+        // In bảng Board (ma trận số nguyên)
+        System.out.println("Current Board (int[][]):");
+        for (int[] row : Board) {
+            System.out.print(Arrays.toString(row));  // In mỗi hàng như một mảng
+        }
+
+        // In bảng BoardChess (ma trận chứa các đối tượng ChessMan)
+        System.out.println("\nCurrent BoardChess (ChessMan[][]):");
+        for (ChessMan[] row : BoardChess) {
+            for (ChessMan chessMan : row) {
+                if (chessMan != null) {
+                    System.out.print(chessMan.name + " ");  // In tên hoặc ký hiệu của quân cờ
+                } else {
+                    System.out.print("null ");  // In null cho ô trống
+                }
+            }
+            System.out.println();  // Xuống dòng sau mỗi hàng
+        }
     }
 }

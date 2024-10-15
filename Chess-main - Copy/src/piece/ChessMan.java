@@ -130,8 +130,10 @@ public abstract class ChessMan{
         this.yLock = y1;
         this.j = (this.xLock / panel.tileSize) - 4;
         this.i = (this.yLock / panel.tileSize) - 2;
-        if (panel.Board[i][j] != 0 || special){
+        if (panel.Board[i][j] != 0){
             this.isEat = true;
+            panel.BoardChess[i][j].alive = false;
+
         }
         else{
             this.isMove = true;
@@ -160,7 +162,8 @@ public abstract class ChessMan{
             panel.Board[i1][j1] = this.value;
         }
 
-        for (ChessMan chessMan : panel.chessMans){
+        for (int m = 0; m < panel.chessMans.size(); m++){
+            ChessMan chessMan = panel.chessMans.get(m);
             if (chessMan.value * this.value < 0) {
                 chessMan.moves = new ArrayList<>();
                 chessMan.eats = new ArrayList<>();
@@ -204,7 +207,6 @@ public abstract class ChessMan{
                 this.alive = false;
             }
         }
-
         if (this.isMove) {
             slowMove(1);
         }
@@ -316,7 +318,8 @@ public abstract class ChessMan{
             if (this.king && this.check) {
                 if (!panel.moving) {
                     panel.end = true;
-                    for (ChessMan chessMan : panel.chessMans) {
+                    for (int m = 0; m < panel.chessMans.size(); m++){
+                        ChessMan chessMan = panel.chessMans.get(m);
                         if (chessMan.value * this.value > 0) {
                             chessMan.nextMoves = new ArrayList<>();
                             chessMan.nextEats = new ArrayList<>();
