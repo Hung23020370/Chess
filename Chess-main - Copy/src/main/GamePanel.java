@@ -178,7 +178,7 @@ public class GamePanel extends Panel {
             if (turn == -1 && frame.modeChessAI && !moving) {
                 runAI = true;
                 ChessAI chessAI = new ChessAI(this);
-                Move bestMove = chessAI.chessAI(1);
+                Move bestMove = chessAI.chessAI(4);
                 if(bestMove == null) end = true;
                 if (bestMove != null) {
                     int x = (bestMove.to.second + 4) * tileSize;
